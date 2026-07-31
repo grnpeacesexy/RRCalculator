@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RR калькулятор</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root {
+    --bg: #0e0f11;
+    --surface: #17181b;
+    --surface-2: #1f2124;
+    --border: #2a2c30;
+    --border-strong: #3a3d42;
+    --text: #eceeef;
+    --text-secondary: #9a9da3;
+    --text-muted: #6b6e74;
+    --accent: #4f8cf0;
+    --accent-dim: #1c3358;
+    --danger: #e5544f;
+    --danger-dim: #3a1f1f;
+    --success: #4fb572;
+    --success-dim: #163223;
+    --warn: #d99a3a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  .banner {
+    background: var(--danger-dim);
+    border: 1px solid #4a2726;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+
+  .banner p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f0a8a5;
+    line-height: 1.4;
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 20px;
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin: 24px 0 10px;
+  }
+
+  .modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .mode-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+
+  .mode-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .hint-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+
+  .hint-box b { color: var(--text); }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .field-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  label {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 15px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input:focus { border-color: var(--accent); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .result-item p:first-child {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0 0 3px;
+  }
+
+  .result-item p:last-child {
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .rr-badge {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .rr-badge.ok { background: var(--success-dim); color: #7cd39a; }
+  .rr-badge.bad { background: var(--danger-dim); color: #f0a8a5; }
+
+  .warn-badge {
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .warn-badge.show { display: block; }
+  .warn-badge.amber { background: #3a2d15; color: #e5b866; }
+  .warn-badge.danger { background: var(--danger-dim); color: #f0a8a5; }
+
+  .result-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 2px 0 0;
+  }
+
+  .result-card {
+    transition: border-color 0.2s;
+  }
+
+  .result-card.rr-good { border-color: #2d5c3f; }
+  .result-card.rr-bad { border-color: #5c2d2b; }
+
+  .result-item p:last-child {
+    transition: color 0.15s;
+  }
+
+  .copy-btn {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 11px;
+    margin-top: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .copy-btn:active { transform: scale(0.98); }
+  .copy-btn.copied { border-color: var(--success); color: #7cd39a; }
+
+  .formula-note {
+    margin-top: 20px;
+    padding: 14px;
+    background: var(--surface-2);
+    border-radius: 10px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .formula-note code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: 12px;
+    color: var(--text);
+    font-family: "SF Mono", Menlo, monospace;
+  }
+
+  .formula-note b { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="banner">
+    <p>Торговля — это сохранение денег, а не их зарабатывание</p>
+  </div>
+
+  <h1>RR калькулятор</h1>
+  <p class="subtitle">Размер позиции и риск/риворд перед входом</p>
+
+  <div class="section-label">Режим расчёта риска</div>
+  <div class="modes">
+    <div class="mode-btn active" data-mode="0">Фикс. $</div>
+    <div class="mode-btn" data-mode="1">% от депозита</div>
+  </div>
+  <div class="hint-box" id="hintBox"></div>
+
+  <div class="field-grid">
+    <div>
+      <label>Депозит, $</label>
+      <input type="number" id="deposit" value="1000" inputmode="decimal">
+    </div>
+    <div>
+      <label id="riskLabel">Риск (1R), $</label>
+      <input type="number" id="riskInput" value="20" inputmode="decimal">
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Параметры сделки</div>
+  <div class="field-grid three">
+    <div>
+      <label>Вход, $</label>
+      <input type="number" id="entry" value="0.001042" step="0.000001" inputmode="decimal">
+    </div>
+    <div>
+      <label>Стоп, $</label>
+      <input type="number" id="stop" value="0.000958" step="0.000001" inputmode="decimal">
+    </div>
+    <div>
+      <label>Цель, $</label>
+      <input type="number" id="target" value="0.001459" step="0.000001" inputmode="decimal">
+    </div>
+  </div>
+  <div class="warn-badge amber" id="stopWarn"></div>
+
+  <div class="divider"></div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-grid">
+      <div class="result-item">
+        <p>Риск на сделку (1R)</p>
+        <p id="outRisk">$20</p>
+      </div>
+      <div class="result-item">
+        <p>Стоп, %</p>
+        <p id="outStopPct">8%</p>
+      </div>
+      <div class="result-item">
+        <p>Размер позиции</p>
+        <p id="outPosition">$250</p>
+        <p class="result-sub" id="outPositionPct">25% от депозита</p>
+      </div>
+      <div class="result-item">
+        <p>RR</p>
+        <p id="outRR">1:3.6</p>
+      </div>
+      <div class="result-item">
+        <p>Количество токенов</p>
+        <p id="outTokens">240 385</p>
+      </div>
+      <div class="result-item">
+        <p>Факт. риск, если депозита не хватает</p>
+        <p id="outActualRisk">$20</p>
+      </div>
+    </div>
+    <div class="warn-badge danger" id="depositWarn"></div>
+    <div class="rr-badge" id="rrBadge"></div>
+    <div class="copy-btn" id="copyBtn">Скопировать сводку сделки</div>
+  </div>
+
+  <div class="formula-note">
+    <b>Как считается размер позиции:</b><br>
+    <code>Стоп % = |Вход − Стоп| / Вход</code><br>
+    <code>Позиция = 1R ÷ Стоп %</code><br>
+    Пример: 1R = $5, стоп 20% от входа → позиция = $5 ÷ 0.20 = $25. Если стоп сработает, теряешь ровно $5 (1R), независимо от размера позиции в долларах.
+  </div>
+
+</div>
+
+<script>
+  if (window.Telegram && window.Telegram.WebApp) {
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+  }
+
+  let mode = 0;
+
+  const deposit = document.getElementById('deposit');
+  const riskInput = document.getElementById('riskInput');
+  const riskLabel = document.getElementById('riskLabel');
+  const entry = document.getElementById('entry');
+  const stop = document.getElementById('stop');
+  const target = document.getElementById('target');
+  const modeButtons = document.querySelectorAll('.mode-btn');
+  const hintBox = document.getElementById('hintBox');
+
+  const hints = [
+    '<b>Когда использовать:</b> базовый режим. Риск в $ фиксирован и не зависит от результатов предыдущих сделок. Используй, пока нет 30-50 сделок статистики — предсказуемо и просто.',
+    '<b>Когда использовать:</b> когда хочешь, чтобы риск сам защищал депозит. После серии убытков риск в $ автоматически уменьшается (эффект обратного сложного процента), после серии побед — растёт. Не нужно вручную решать, сокращать ли размер после просадки.'
+  ];
+
+  const defaults = [20, 2];
+
+  function setMode(m) {
+    mode = m;
+    modeButtons.forEach(b => b.classList.toggle('active', parseInt(b.dataset.mode) === m));
+    riskLabel.textContent = mode === 0 ? 'Риск (1R), $' : 'Риск, % от депозита';
+    riskInput.value = defaults[mode];
+    hintBox.innerHTML = hints[mode];
+    calc();
+  }
+
+  function calc() {
+    const dep = parseFloat(deposit.value) || 0;
+    const e = parseFloat(entry.value) || 0;
+    const s = parseFloat(stop.value) || 0;
+    const t = parseFloat(target.value) || 0;
+
+    const stopWarn = document.getElementById('stopWarn');
+    const depositWarn = document.getElementById('depositWarn');
+
+    // Валидация: стоп должен быть ниже входа (лонг-онли сетап)
+    if (e > 0 && s >= e) {
+      stopWarn.textContent = 'Стоп должен быть ниже входа — проверь значения (сетап лонг-онли)';
+      stopWarn.className = 'warn-badge amber show';
+    } else {
+      stopWarn.className = 'warn-badge amber';
+    }
+
+    let riskDollar;
+    if (mode === 0) {
+      riskDollar = parseFloat(riskInput.value) || 0;
+    } else {
+      riskDollar = dep * (parseFloat(riskInput.value) || 0) / 100;
+    }
+
+    const stopPct = (e > 0 && s < e) ? Math.abs((e - s) / e) * 100 : 0;
+    const position = stopPct > 0 ? riskDollar / (stopPct / 100) : 0;
+    const rewardPct = e > 0 ? Math.abs((t - e) / e) * 100 : 0;
+    const rr = stopPct > 0 ? rewardPct / stopPct : 0;
+    const tokens = e > 0 ? position / e : 0;
+    const posPctOfDep = dep > 0 ? (position / dep) * 100 : 0;
+
+    document.getElementById('outRisk').textContent = '$' + riskDollar.toFixed(2);
+    document.getElementById('outStopPct').textContent = stopPct.toFixed(1) + '%';
+    document.getElementById('outPosition').textContent = '$' + position.toFixed(2);
+    document.getElementById('outRR').textContent = stopPct > 0 ? '1:' + rr.toFixed(2) : '—';
+    document.getElementById('outTokens').textContent = tokens > 0 ? Math.round(tokens).toLocaleString('ru-RU') : '—';
+    document.getElementById('outPositionPct').textContent = dep > 0 ? posPctOfDep.toFixed(0) + '% от депозита' : '';
+
+    // Предупреждение: позиция превышает депозит (нет плеча — риск фактически ниже 1R)
+    if (position > dep && dep > 0) {
+      const actualRisk = dep * (stopPct / 100);
+      document.getElementById('outActualRisk').textContent = '$' + actualRisk.toFixed(2);
+      depositWarn.textContent = 'Позиция ($' + position.toFixed(2) + ') больше депозита ($' + dep.toFixed(2) + '). Без плеча ты вложишь максимум весь депозит, и реальный риск при срабатывании стопа составит $' + actualRisk.toFixed(2) + ', а не заданный 1R.';
+      depositWarn.className = 'warn-badge danger show';
+    } else {
+      document.getElementById('outActualRisk').textContent = '$' + riskDollar.toFixed(2);
+      depositWarn.className = 'warn-badge danger';
+    }
+
+    // Предупреждение: стоп менее 3% — invalidation по чек-листу Setup 2
+    if (stopPct > 0 && stopPct < 3) {
+      stopWarn.textContent = 'Стоп менее 3% от входа — по чек-листу Setup 2 это пропуск сделки';
+      stopWarn.className = 'warn-badge amber show';
+    }
+
+    const badge = document.getElementById('rrBadge');
+    const card = document.getElementById('resultCard');
+    if (stopPct === 0) {
+      badge.textContent = 'Заполни вход и стоп корректно';
+      badge.className = 'rr-badge bad';
+      card.className = 'result-card';
+    } else if (rr >= 2) {
+      badge.textContent = 'RR ≥ 1:2 — вход по чек-листу допустим';
+      badge.className = 'rr-badge ok';
+      card.className = 'result-card rr-good';
+    } else {
+      badge.textContent = 'RR < 1:2 — по правилам пропуск сделки';
+      badge.className = 'rr-badge bad';
+      card.className = 'result-card rr-bad';
+    }
+
+    window._lastCalc = { riskDollar, stopPct, position, rr, tokens, e, s, t };
+  }
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', () => {
+    const c = window._lastCalc;
+    if (!c) return;
+    const summary =
+`Вход: $${c.e}
+Стоп: $${c.s}
+Цель: $${c.t}
+Риск (1R): $${c.riskDollar.toFixed(2)}
+Стоп: ${c.stopPct.toFixed(1)}%
+Позиция: $${c.position.toFixed(2)}
+Токенов: ${Math.round(c.tokens).toLocaleString('ru-RU')}
+RR: 1:${c.rr.toFixed(2)}`;
+
+    navigator.clipboard.writeText(summary).then(() => {
+      copyBtn.textContent = 'Скопировано';
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.textContent = 'Скопировать сводку сделки';
+        copyBtn.classList.remove('copied');
+      }, 1500);
+    }).catch(() => {});
+  });
+
+  modeButtons.forEach(b => b.addEventListener('click', () => {
+    const m = parseInt(b.dataset.mode);
+    setMode(m);
+    try { localStorage.setItem('rr_calc_mode', m); } catch (e) {}
+  }));
+  [deposit, riskInput, entry, stop, target].forEach(el => el.addEventListener('input', calc));
+
+  let savedMode = 0;
+  try {
+    const s = localStorage.getItem('rr_calc_mode');
+    if (s !== null) savedMode = parseInt(s);
+  } catch (e) {}
+
+  setMode(savedMode);
+</script>
+
+</body>
+</html>
