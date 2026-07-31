@@ -42,7 +42,7 @@
   body {
     margin: 0;
     background:
-      radial-gradient(ellipse 800px 500px at 50% -10%, rgba(91, 155, 255, 0.07), transparent),
+      radial-gradient(ellipse 800px 500px at 50% -10%, rgba(91, 155, 255, 0.06), transparent),
       var(--bg);
     background-attachment: fixed;
     color: var(--text);
@@ -55,20 +55,21 @@
 
   input:focus-visible,
   .mode-btn:focus-visible,
-  .copy-btn:focus-visible {
+  .copy-btn:focus-visible,
+  .collapse-head:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
   .wrap {
-    max-width: 520px;
+    max-width: 480px;
     margin: 0 auto;
-    padding: 24px 16px 48px;
-    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 20px 16px 40px;
+    animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -76,59 +77,27 @@
     * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 
-  .banner {
-    position: relative;
-    background: linear-gradient(135deg, var(--danger-dim), #241414);
-    border: 1px solid #422222;
-    border-radius: 16px;
-    padding: 16px 18px;
-    margin-bottom: 24px;
-    overflow: hidden;
-  }
-
-  .banner::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, var(--danger), transparent);
-    opacity: 0.5;
-    width: 3px;
-  }
-
-  .banner p {
-    margin: 0;
-    padding-left: 10px;
-    font-size: 14.5px;
-    font-weight: 600;
-    color: #ffb3af;
-    line-height: 1.45;
-    letter-spacing: -0.01em;
-  }
-
   .header-row {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 4px;
+    margin-bottom: 20px;
   }
 
   h1 {
-    font-size: 20px;
-    font-weight: 800;
+    font-size: 18px;
+    font-weight: 700;
     letter-spacing: -0.02em;
     margin: 0;
-    background: linear-gradient(135deg, var(--text), var(--text-secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text);
   }
 
   .live-dot {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -143,7 +112,7 @@
     height: 6px;
     border-radius: 50%;
     background: var(--success);
-    box-shadow: 0 0 8px var(--success-glow), 0 0 0 3px var(--success-glow);
+    box-shadow: 0 0 8px var(--success-glow);
     animation: pulse 2s ease-in-out infinite;
   }
 
@@ -152,33 +121,7 @@
     50% { opacity: 0.4; }
   }
 
-  .subtitle {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    margin: 0 0 22px;
-    letter-spacing: -0.005em;
-  }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin: 26px 0 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--border), transparent);
-  }
-
-  .modes {
+  .toggle-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
@@ -188,21 +131,20 @@
     position: relative;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 11px;
     color: var(--text-secondary);
     font-size: 13px;
     font-weight: 600;
-    padding: 12px 8px;
+    padding: 11px 8px;
     text-align: center;
     cursor: pointer;
     letter-spacing: -0.01em;
-    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, transform 0.1s ease;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, transform 0.1s ease;
   }
 
   .mode-btn:hover {
     border-color: var(--border-strong);
     color: var(--text);
-    background: var(--surface-hover);
   }
 
   .mode-btn:active { transform: scale(0.97); }
@@ -211,29 +153,24 @@
     border-color: var(--accent);
     color: var(--accent-bright);
     background: var(--accent-dim);
-    box-shadow: 0 0 0 1px var(--accent) inset, 0 4px 16px -4px var(--accent-glow);
+    box-shadow: 0 0 0 1px var(--accent) inset;
   }
 
-  .hint-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 2px solid var(--accent);
-    border-radius: 10px;
-    padding: 13px 15px;
-    margin-top: 10px;
-    font-size: 12.5px;
-    line-height: 1.55;
-    color: var(--text-secondary);
-    transition: opacity 0.15s ease;
-  }
+  .toggle-group { margin-bottom: 14px; }
 
-  .hint-box b { color: var(--text); font-weight: 600; }
+  .toggle-caption {
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin: 0 0 7px 2px;
+  }
 
   .field-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-top: 12px;
   }
 
   .field-grid.three {
@@ -266,12 +203,12 @@
     min-width: 0;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 11px;
+    border-radius: 12px;
     color: var(--text);
     font-family: var(--mono);
-    font-size: 14.5px;
-    font-weight: 500;
-    padding: 11px 12px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px 12px;
     outline: none;
     letter-spacing: -0.01em;
     transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
@@ -284,7 +221,7 @@
     margin: 0;
   }
 
-  input::placeholder { color: var(--text-muted); font-family: var(--sans); }
+  input::placeholder { color: var(--text-muted); font-family: var(--sans); font-weight: 400; }
 
   input:hover { border-color: var(--border-strong); }
 
@@ -294,10 +231,29 @@
     box-shadow: 0 0 0 3px var(--accent-glow);
   }
 
+  .rr-shortcut { margin-top: 10px; }
+
+  .rr-shortcut label {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .rr-shortcut .opt-tag {
+    font-size: 9.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-radius: 5px;
+    padding: 1px 5px;
+  }
+
   .divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
-    margin: 26px 0;
+    background: linear-gradient(90deg, transparent, var(--border) 15%, var(--border) 85%, transparent);
+    margin: 20px 0;
   }
 
   .result-card {
@@ -305,7 +261,7 @@
     background: linear-gradient(180deg, var(--surface), var(--bg-elevated));
     border: 1px solid var(--border-strong);
     border-radius: 18px;
-    padding: 18px;
+    padding: 20px;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
     box-shadow: 0 12px 40px -16px rgba(0, 0, 0, 0.5);
   }
@@ -320,40 +276,14 @@
     box-shadow: 0 12px 40px -16px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--danger-glow) inset;
   }
 
-  .result-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 14px;
-    margin-bottom: 16px;
-  }
-
-  .result-item p:first-child {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin: 0 0 4px;
-    letter-spacing: -0.005em;
-  }
-
-  .result-item p:last-child {
-    font-family: var(--mono);
-    font-size: 21px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin: 0;
-    transition: color 0.2s ease;
-    font-variant-numeric: tabular-nums;
-  }
-
-  #outRR { color: var(--accent-bright); }
-
   .rr-badge {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 13.5px;
+    font-weight: 700;
     padding: 12px 14px;
     border-radius: 12px;
     text-align: center;
     letter-spacing: -0.005em;
+    margin-bottom: 18px;
     transition: background 0.2s ease, color 0.2s ease;
   }
 
@@ -369,13 +299,76 @@
     box-shadow: 0 0 0 1px rgba(255, 92, 87, 0.25) inset;
   }
 
+  .primary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .primary-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 14px 12px;
+  }
+
+  .primary-item p:first-child {
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+  }
+
+  .primary-item p:last-child {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  #outRR { color: var(--accent-bright); }
+  #outPosition { color: var(--text); }
+
+  .secondary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .secondary-item {
+    text-align: center;
+    padding: 4px 2px;
+  }
+
+  .secondary-item p:first-child {
+    font-size: 9.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin: 0 0 4px;
+    letter-spacing: 0.01em;
+  }
+
+  .secondary-item p:last-child {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
   .warn-badge {
     font-size: 12.5px;
     font-weight: 500;
     padding: 11px 13px;
     border-radius: 11px;
-    margin-top: 10px;
-    line-height: 1.55;
+    margin-top: 14px;
+    line-height: 1.5;
     display: none;
   }
 
@@ -389,13 +382,6 @@
   .warn-badge.amber { background: var(--warn-dim); color: #f0c477; box-shadow: 0 0 0 1px rgba(229, 168, 63, 0.2) inset; }
   .warn-badge.danger { background: var(--danger-dim); color: #ffaba7; box-shadow: 0 0 0 1px rgba(255, 92, 87, 0.2) inset; }
 
-  .result-sub {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    margin: 3px 0 0;
-    font-family: var(--sans);
-  }
-
   .copy-btn {
     width: 100%;
     background: var(--surface-2);
@@ -405,7 +391,7 @@
     font-size: 13.5px;
     font-weight: 600;
     padding: 13px;
-    margin-top: 14px;
+    margin-top: 16px;
     cursor: pointer;
     text-align: center;
     letter-spacing: -0.005em;
@@ -438,20 +424,56 @@
 
   .copy-btn.copied::before { content: '✓'; opacity: 1; }
 
-  .formula-note {
-    margin-top: 22px;
-    padding: 16px;
-    background: var(--surface);
+  .collapse {
+    margin-top: 14px;
     border: 1px solid var(--border);
     border-radius: 14px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .collapse-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 15px;
+    cursor: pointer;
     font-size: 12.5px;
-    line-height: 1.65;
+    font-weight: 600;
+    color: var(--text-secondary);
+    user-select: none;
+  }
+
+  .collapse-head:hover { color: var(--text); }
+
+  .collapse-head .chev {
+    font-size: 11px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .collapse.open .collapse-head .chev { transform: rotate(180deg); }
+
+  .collapse-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+
+  .collapse.open .collapse-body {
+    max-height: 600px;
+  }
+
+  .collapse-inner {
+    padding: 0 15px 15px;
+    font-size: 12.5px;
+    line-height: 1.6;
     color: var(--text-secondary);
   }
 
-  .formula-note b { color: var(--text); font-weight: 600; }
+  .collapse-inner b { color: var(--text); font-weight: 600; }
 
-  .formula-note code {
+  .collapse-inner code {
     display: inline-block;
     background: var(--bg);
     border: 1px solid var(--border);
@@ -462,113 +484,148 @@
     color: var(--accent-bright);
     font-family: var(--mono);
   }
+
+  .collapse-inner .hint-block {
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .collapse-inner .hint-block:first-child {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: none;
+  }
+
+  .collapse-inner .quote-block {
+    font-weight: 600;
+    font-style: italic;
+    color: var(--text-secondary);
+    border-left: 2px solid var(--danger);
+    padding-left: 12px;
+  }
 </style>
 </head>
 <body>
 
 <div class="wrap">
 
-  <div class="banner">
-    <p>Торговля — это сохранение денег, а не их зарабатывание</p>
-  </div>
-
   <div class="header-row">
     <h1>RR калькулятор</h1>
     <span class="live-dot">live</span>
   </div>
-  <p class="subtitle">Размер позиции и риск/риворд перед входом</p>
 
-  <div class="section-label">Единицы ввода сделки</div>
-  <div class="modes">
-    <div class="mode-btn active" data-unit="price">Цена, $</div>
-    <div class="mode-btn" data-unit="mcap">Маркеткап</div>
+  <div class="toggle-group">
+    <p class="toggle-caption">Единицы сделки</p>
+    <div class="toggle-row">
+      <div class="mode-btn active" data-unit="price">Цена, $</div>
+      <div class="mode-btn" data-unit="mcap">Маркеткап</div>
+    </div>
   </div>
 
-  <div class="section-label">Режим расчёта риска</div>
-  <div class="modes">
-    <div class="mode-btn active" data-mode="0">Фикс. $</div>
-    <div class="mode-btn" data-mode="1">% от депозита</div>
+  <div class="toggle-group">
+    <p class="toggle-caption">Расчёт риска</p>
+    <div class="toggle-row">
+      <div class="mode-btn active" data-mode="0">Фикс. $</div>
+      <div class="mode-btn" data-mode="1">% от депозита</div>
+    </div>
   </div>
-  <div class="hint-box" id="hintBox"></div>
 
   <div class="field-grid">
     <div class="input-wrap">
       <label>Депозит, $</label>
-      <input type="number" id="deposit" value="1000" inputmode="decimal">
+      <input type="text" id="deposit" value="1 000" inputmode="decimal">
     </div>
     <div class="input-wrap">
       <label id="riskLabel">Риск (1R), $</label>
-      <input type="number" id="riskInput" value="20" inputmode="decimal">
+      <input type="text" id="riskInput" value="20" inputmode="decimal">
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <div class="section-label">Параметры сделки</div>
   <div class="field-grid three">
     <div class="input-wrap">
       <label id="entryLabel">Вход, $</label>
-      <input type="number" id="entry" value="0.001042" step="0.000001" inputmode="decimal">
+      <input type="text" id="entry" value="0.001042" inputmode="decimal">
     </div>
     <div class="input-wrap">
       <label id="stopLabel">Стоп, $</label>
-      <input type="number" id="stop" value="0.000958" step="0.000001" inputmode="decimal">
+      <input type="text" id="stop" value="0.000958" inputmode="decimal">
     </div>
     <div class="input-wrap">
       <label id="targetLabel">Цель, $</label>
-      <input type="number" id="target" value="0.001459" step="0.000001" inputmode="decimal">
+      <input type="text" id="target" value="0.001459" inputmode="decimal">
     </div>
   </div>
-  <div class="field-grid" style="margin-top: 10px;">
+
+  <div class="rr-shortcut">
     <div class="input-wrap">
-      <label>Свой RR (необязательно)</label>
-      <input type="number" id="rrInput" placeholder="напр. 3" step="0.1" inputmode="decimal">
-      <p class="result-sub" style="margin-top:6px;">Впиши RR — цель пересчитается сама. Или впиши цель вручную — RR посчитается от неё.</p>
+      <label>Свой RR <span class="opt-tag">опционально</span></label>
+      <input type="text" id="rrInput" placeholder="напр. 3" inputmode="decimal">
     </div>
   </div>
+
   <div class="warn-badge amber" id="stopWarn"></div>
 
   <div class="divider"></div>
 
   <div class="result-card" id="resultCard">
-    <div class="result-grid">
-      <div class="result-item">
-        <p>Риск на сделку (1R)</p>
-        <p id="outRisk">$20</p>
-      </div>
-      <div class="result-item">
-        <p>Стоп, %</p>
-        <p id="outStopPct">8%</p>
-      </div>
-      <div class="result-item">
-        <p>Размер позиции</p>
-        <p id="outPosition">$250</p>
-        <p class="result-sub" id="outPositionPct">25% от депозита</p>
-      </div>
-      <div class="result-item">
+    <div class="rr-badge" id="rrBadge"></div>
+
+    <div class="primary-grid">
+      <div class="primary-item">
         <p>RR</p>
         <p id="outRR">1:3.6</p>
       </div>
-      <div class="result-item" id="tokensBlock">
-        <p>Количество токенов</p>
-        <p id="outTokens">240 385</p>
-      </div>
-      <div class="result-item">
-        <p>Факт. риск, если депозита не хватает</p>
-        <p id="outActualRisk">$20</p>
+      <div class="primary-item">
+        <p>Размер позиции</p>
+        <p id="outPosition">$250</p>
       </div>
     </div>
+
+    <div class="secondary-grid">
+      <div class="secondary-item">
+        <p>Риск (1R)</p>
+        <p id="outRisk">$20</p>
+      </div>
+      <div class="secondary-item">
+        <p>Стоп</p>
+        <p id="outStopPct">8%</p>
+      </div>
+      <div class="secondary-item" id="tokensBlock">
+        <p>Токенов</p>
+        <p id="outTokens">240 385</p>
+      </div>
+    </div>
+
     <div class="warn-badge danger" id="depositWarn"></div>
-    <div class="rr-badge" id="rrBadge"></div>
-    <div class="copy-btn" id="copyBtn">Скопировать сводку сделки</div>
+
+    <div class="copy-btn" id="copyBtn">Скопировать сводку</div>
   </div>
 
-  <div class="formula-note">
-    <b>Как считается размер позиции:</b><br>
-    <code>Стоп % = |Вход − Стоп| / Вход</code><br>
-    <code>Позиция = 1R ÷ Стоп %</code><br>
-    Пример: 1R = $5, стоп 20% от входа → позиция = $5 ÷ 0.20 = $25. Если стоп сработает, теряешь ровно $5 (1R), независимо от размера позиции в долларах.<br><br>
-    <b>Режим "Маркеткап":</b> % стопа и RR считаются от соотношения капов — это то же самое число, что и по цене (капа = цена × число токенов, множитель сокращается). Удобно, если ты мыслишь целями в капе, а не в цене токена. В этом режиме размер позиции в токенах не считается — только $ и %.
+  <div class="collapse" id="collapseBlock">
+    <div class="collapse-head" id="collapseHead">
+      <span>Как это работает</span>
+      <span class="chev">▾</span>
+    </div>
+    <div class="collapse-body">
+      <div class="collapse-inner">
+        <div class="hint-block" id="hintBox"></div>
+        <div class="hint-block">
+          <b>Формула позиции:</b><br>
+          <code>Стоп % = |Вход − Стоп| / Вход</code><br>
+          <code>Позиция = 1R ÷ Стоп %</code><br>
+          Пример: 1R = $5, стоп 20% → позиция $25. Сработает стоп — теряешь ровно $5, независимо от размера позиции.
+        </div>
+        <div class="hint-block">
+          <b>Режим «Маркеткап»:</b> % стопа и RR считаются от соотношения капов — то же число, что и по цене. Размер позиции в токенах в этом режиме не считается.
+        </div>
+        <div class="hint-block quote-block">
+          Торговля — это сохранение денег, а не их зарабатывание
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -581,6 +638,7 @@
 
   let mode = 0;
   let unit = 'price';
+  let rrInputActive = false;
 
   const deposit = document.getElementById('deposit');
   const riskInput = document.getElementById('riskInput');
@@ -590,15 +648,52 @@
   const target = document.getElementById('target');
   const rrInput = document.getElementById('rrInput');
   const unitButtons = document.querySelectorAll('.mode-btn[data-unit]');
+  const modeButtons = document.querySelectorAll('.mode-btn[data-mode]');
   const entryLabel = document.getElementById('entryLabel');
   const stopLabel = document.getElementById('stopLabel');
   const targetLabel = document.getElementById('targetLabel');
   const tokensBlock = document.getElementById('tokensBlock');
+  const hintBox = document.getElementById('hintBox');
+  const stopWarn = document.getElementById('stopWarn');
+  const depositWarn = document.getElementById('depositWarn');
+
+  // ---------- helpers: space-grouped thousands formatting ----------
+  // Used for: deposit, riskInput (mode 0), and entry/stop/target when unit === 'mcap'.
+  // Plain decimal parsing used for: entry/stop/target when unit === 'price', riskInput (mode 1), rrInput.
+
+  function stripSpaces(str) {
+    return (str || '').replace(/\s/g, '');
+  }
+
+  function formatGrouped(rawDigits) {
+    if (!rawDigits) return '';
+    return rawDigits.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+
+  // Reformats an input's value to grouped digits-only, preserving caret position.
+  function groupifyField(el) {
+    const cursorFromEnd = el.value.length - el.selectionStart;
+    const digitsOnly = stripSpaces(el.value).replace(/[^\d]/g, '');
+    const formatted = formatGrouped(digitsOnly);
+    if (el.value !== formatted) {
+      el.value = formatted;
+      const newPos = Math.max(0, formatted.length - cursorFromEnd);
+      el.setSelectionRange(newPos, newPos);
+    }
+  }
+
+  function numFromField(el, grouped) {
+    return grouped ? (parseFloat(stripSpaces(el.value)) || 0) : (parseFloat(el.value) || 0);
+  }
 
   const unitDefaults = {
-    price: { entry: 0.001042, stop: 0.000958, step: '0.000001' },
-    mcap: { entry: 850000, stop: 720000, step: '1000' }
+    price: { entry: '0.001042', stop: '0.000958', target: '0.001459' },
+    mcap: { entry: '850 000', stop: '720 000', target: '1 400 000' }
   };
+
+  function tradeFieldsGrouped() {
+    return unit === 'mcap';
+  }
 
   function setUnit(u) {
     unit = u;
@@ -610,26 +705,21 @@
     const d = unitDefaults[u];
     entry.value = d.entry;
     stop.value = d.stop;
-    target.value = isMcap ? 1400000 : 0.001459;
-    entry.step = d.step;
-    stop.step = d.step;
-    target.step = d.step;
-    tokensBlock.style.display = isMcap ? 'none' : 'block';
+    target.value = d.target;
+    tokensBlock.style.display = isMcap ? 'block' : 'block';
+    tokensBlock.style.visibility = isMcap ? 'hidden' : 'visible';
     try { localStorage.setItem('rr_calc_unit', u); } catch (e) {}
     calc();
   }
 
   unitButtons.forEach(b => b.addEventListener('click', () => setUnit(b.dataset.unit)));
 
-  const modeButtons = document.querySelectorAll('.mode-btn[data-mode]');
-  const hintBox = document.getElementById('hintBox');
-
   const hints = [
-    '<b>Когда использовать:</b> базовый режим. Риск в $ фиксирован и не зависит от результатов предыдущих сделок. Используй, пока нет 30-50 сделок статистики — предсказуемо и просто.',
-    '<b>Когда использовать:</b> когда хочешь, чтобы риск сам защищал депозит. После серии убытков риск в $ автоматически уменьшается (эффект обратного сложного процента), после серии побед — растёт. Не нужно вручную решать, сокращать ли размер после просадки.'
+    '<b>Фикс. $:</b> риск в деньгах не зависит от результатов предыдущих сделок. Используй, пока нет 30-50 сделок статистики.',
+    '<b>% от депозита:</b> риск в $ подстраивается под текущий депозит — после просадки уменьшается, после роста увеличивается.'
   ];
 
-  const defaults = [20, 2];
+  const defaults = ['20', '2'];
 
   function setMode(m) {
     mode = m;
@@ -640,29 +730,31 @@
     calc();
   }
 
-  let rrInputActive = false;
-
   function applyRR() {
-    const e = parseFloat(entry.value) || 0;
-    const s = parseFloat(stop.value) || 0;
+    const grouped = tradeFieldsGrouped();
+    const e = numFromField(entry, grouped);
+    const s = numFromField(stop, grouped);
     const desiredRR = parseFloat(rrInput.value);
     if (!e || !s || s >= e || !desiredRR || desiredRR <= 0) return;
     const stopPct = Math.abs((e - s) / e);
     const newTarget = e + e * stopPct * desiredRR;
-    target.value = target.step && target.step.includes('.') ? newTarget.toFixed(6) : Math.round(newTarget);
+    if (grouped) {
+      target.value = formatGrouped(Math.round(newTarget).toString());
+    } else {
+      let str = newTarget.toFixed(6);
+      str = str.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+      target.value = str;
+    }
     calc();
   }
 
   function calc() {
-    const dep = parseFloat(deposit.value) || 0;
-    const e = parseFloat(entry.value) || 0;
-    const s = parseFloat(stop.value) || 0;
-    const t = parseFloat(target.value) || 0;
+    const grouped = tradeFieldsGrouped();
+    const dep = numFromField(deposit, true);
+    const e = numFromField(entry, grouped);
+    const s = numFromField(stop, grouped);
+    const t = numFromField(target, grouped);
 
-    const stopWarn = document.getElementById('stopWarn');
-    const depositWarn = document.getElementById('depositWarn');
-
-    // Валидация: стоп должен быть ниже входа (лонг-онли сетап)
     if (e > 0 && s >= e) {
       stopWarn.textContent = 'Стоп должен быть ниже входа — проверь значения (сетап лонг-онли)';
       stopWarn.className = 'warn-badge amber show';
@@ -672,9 +764,9 @@
 
     let riskDollar;
     if (mode === 0) {
-      riskDollar = parseFloat(riskInput.value) || 0;
+      riskDollar = numFromField(riskInput, true);
     } else {
-      riskDollar = dep * (parseFloat(riskInput.value) || 0) / 100;
+      riskDollar = dep * (parseFloat(stripSpaces(riskInput.value)) || 0) / 100;
     }
 
     const stopPct = (e > 0 && s < e) ? Math.abs((e - s) / e) * 100 : 0;
@@ -682,7 +774,6 @@
     const rewardPct = e > 0 ? Math.abs((t - e) / e) * 100 : 0;
     const rr = stopPct > 0 ? rewardPct / stopPct : 0;
     const tokens = e > 0 ? position / e : 0;
-    const posPctOfDep = dep > 0 ? (position / dep) * 100 : 0;
 
     document.getElementById('outRisk').textContent = '$' + riskDollar.toFixed(2);
     document.getElementById('outStopPct').textContent = stopPct.toFixed(1) + '%';
@@ -692,21 +783,23 @@
     if (!rrInputActive && stopPct > 0) {
       rrInput.value = rr.toFixed(2);
     }
-    document.getElementById('outTokens').textContent = tokens > 0 ? Math.round(tokens).toLocaleString('ru-RU') : '—';
-    document.getElementById('outPositionPct').textContent = dep > 0 ? posPctOfDep.toFixed(0) + '% от депозита' : '';
 
-    // Предупреждение: позиция превышает депозит (нет плеча — риск фактически ниже 1R)
+    if (unit === 'mcap') {
+      tokensBlock.style.visibility = 'hidden';
+      document.getElementById('outTokens').textContent = '—';
+    } else {
+      tokensBlock.style.visibility = 'visible';
+      document.getElementById('outTokens').textContent = tokens > 0 ? Math.round(tokens).toLocaleString('ru-RU') : '—';
+    }
+
     if (position > dep && dep > 0) {
       const actualRisk = dep * (stopPct / 100);
-      document.getElementById('outActualRisk').textContent = '$' + actualRisk.toFixed(2);
-      depositWarn.textContent = 'Позиция ($' + position.toFixed(2) + ') больше депозита ($' + dep.toFixed(2) + '). Без плеча ты вложишь максимум весь депозит, и реальный риск при срабатывании стопа составит $' + actualRisk.toFixed(2) + ', а не заданный 1R.';
+      depositWarn.textContent = 'Позиция ($' + position.toFixed(2) + ') больше депозита ($' + dep.toFixed(2) + '). Реальный риск при срабатывании стопа — $' + actualRisk.toFixed(2) + ', а не заданный 1R.';
       depositWarn.className = 'warn-badge danger show';
     } else {
-      document.getElementById('outActualRisk').textContent = '$' + riskDollar.toFixed(2);
       depositWarn.className = 'warn-badge danger';
     }
 
-    // Предупреждение: стоп менее 3% — invalidation по чек-листу Setup 2
     if (stopPct > 0 && stopPct < 3) {
       stopWarn.textContent = 'Стоп менее 3% от входа — по чек-листу Setup 2 это пропуск сделки';
       stopWarn.className = 'warn-badge amber show';
@@ -749,7 +842,7 @@ RR: 1:${c.rr.toFixed(2)}`;
       copyBtn.textContent = 'Скопировано';
       copyBtn.classList.add('copied');
       setTimeout(() => {
-        copyBtn.textContent = 'Скопировать сводку сделки';
+        copyBtn.textContent = 'Скопировать сводку';
         copyBtn.classList.remove('copied');
       }, 1500);
     }).catch(() => {});
@@ -760,14 +853,40 @@ RR: 1:${c.rr.toFixed(2)}`;
     setMode(m);
     try { localStorage.setItem('rr_calc_mode', m); } catch (e) {}
   }));
-  [deposit, riskInput, entry, stop, target].forEach(el => el.addEventListener('input', () => {
-    rrInputActive = false;
-    calc();
-  }));
+
+  // deposit & riskInput: always space-grouped integers
+  [deposit, riskInput].forEach(el => {
+    el.addEventListener('input', () => {
+      // riskInput in "% of deposit" mode is a plain percentage, not grouped
+      if (el === riskInput && mode === 1) {
+        calc();
+        return;
+      }
+      groupifyField(el);
+      calc();
+    });
+  });
+
+  // entry/stop/target: grouped in mcap unit, plain decimal in price unit
+  [entry, stop, target].forEach(el => {
+    el.addEventListener('input', () => {
+      if (tradeFieldsGrouped()) {
+        groupifyField(el);
+      }
+      rrInputActive = false;
+      calc();
+    });
+  });
 
   rrInput.addEventListener('focus', () => { rrInputActive = true; });
   rrInput.addEventListener('input', applyRR);
   rrInput.addEventListener('blur', () => { rrInputActive = false; });
+
+  const collapseBlock = document.getElementById('collapseBlock');
+  const collapseHead = document.getElementById('collapseHead');
+  collapseHead.addEventListener('click', () => {
+    collapseBlock.classList.toggle('open');
+  });
 
   let savedMode = 0;
   try {
