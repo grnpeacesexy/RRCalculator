@@ -6,114 +6,228 @@
 <title>RR калькулятор</title>
 <script src="https://telegram.org/js/telegram-web-app.js" defer onerror="console.warn('Telegram WebApp SDK not loaded — running in browser mode')"></script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
   :root {
-    --bg: #0e0f11;
-    --surface: #17181b;
-    --surface-2: #1f2124;
-    --border: #2a2c30;
-    --border-strong: #3a3d42;
-    --text: #eceeef;
-    --text-secondary: #9a9da3;
-    --text-muted: #6b6e74;
-    --accent: #4f8cf0;
-    --accent-dim: #1c3358;
-    --danger: #e5544f;
-    --danger-dim: #3a1f1f;
-    --success: #4fb572;
-    --success-dim: #163223;
-    --warn: #d99a3a;
+    --bg: #0a0b0d;
+    --bg-elevated: #0d0f12;
+    --surface: #14161a;
+    --surface-2: #1b1e23;
+    --surface-hover: #20232a;
+    --border: #24272e;
+    --border-strong: #34383f;
+    --text: #f2f3f5;
+    --text-secondary: #9499a3;
+    --text-muted: #61656d;
+    --accent: #5b9bff;
+    --accent-bright: #7ab0ff;
+    --accent-dim: #16233d;
+    --accent-glow: rgba(91, 155, 255, 0.18);
+    --danger: #ff5c57;
+    --danger-dim: #2b1616;
+    --danger-glow: rgba(255, 92, 87, 0.14);
+    --success: #3ecf7e;
+    --success-dim: #10281c;
+    --success-glow: rgba(62, 207, 126, 0.14);
+    --warn: #e5a83f;
+    --warn-dim: #2b230f;
+    --mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { background: var(--bg); }
 
   body {
     margin: 0;
-    background: var(--bg);
+    background:
+      radial-gradient(ellipse 800px 500px at 50% -10%, rgba(91, 155, 255, 0.07), transparent),
+      var(--bg);
+    background-attachment: fixed;
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--accent-glow); color: var(--text); }
+
+  input:focus-visible,
+  .mode-btn:focus-visible,
+  .copy-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   .wrap {
-    max-width: 480px;
+    max-width: 520px;
     margin: 0 auto;
-    padding: 20px 16px 40px;
+    padding: 24px 16px 48px;
+    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 
   .banner {
-    background: var(--danger-dim);
-    border: 1px solid #4a2726;
-    border-radius: 14px;
+    position: relative;
+    background: linear-gradient(135deg, var(--danger-dim), #241414);
+    border: 1px solid #422222;
+    border-radius: 16px;
     padding: 16px 18px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--danger), transparent);
+    opacity: 0.5;
+    width: 3px;
   }
 
   .banner p {
     margin: 0;
-    font-size: 15px;
+    padding-left: 10px;
+    font-size: 14.5px;
     font-weight: 600;
-    color: #f0a8a5;
-    line-height: 1.4;
+    color: #ffb3af;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  .header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 4px;
   }
 
   h1 {
-    font-size: 18px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+    background: linear-gradient(135deg, var(--text), var(--text-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .live-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
     font-weight: 600;
-    margin: 0 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+
+  .live-dot::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success-glow), 0 0 0 3px var(--success-glow);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
 
   .subtitle {
-    font-size: 13px;
+    font-size: 13.5px;
     color: var(--text-muted);
-    margin: 0 0 20px;
+    margin: 0 0 22px;
+    letter-spacing: -0.005em;
   }
 
   .section-label {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     color: var(--text-muted);
-    margin: 24px 0 10px;
+    margin: 26px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
   }
 
   .modes {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    gap: 8px;
   }
 
   .mode-btn {
+    position: relative;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--text-secondary);
-    font-size: 12.5px;
-    font-weight: 500;
-    padding: 10px 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 8px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    letter-spacing: -0.01em;
+    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, transform 0.1s ease;
   }
+
+  .mode-btn:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  .mode-btn:active { transform: scale(0.97); }
 
   .mode-btn.active {
     border-color: var(--accent);
-    color: var(--accent);
+    color: var(--accent-bright);
     background: var(--accent-dim);
+    box-shadow: 0 0 0 1px var(--accent) inset, 0 4px 16px -4px var(--accent-glow);
   }
 
   .hint-box {
     background: var(--surface);
     border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
     border-radius: 10px;
-    padding: 12px 14px;
+    padding: 13px 15px;
     margin-top: 10px;
     font-size: 12.5px;
-    line-height: 1.5;
+    line-height: 1.55;
     color: var(--text-secondary);
+    transition: opacity 0.15s ease;
   }
 
-  .hint-box b { color: var(--text); }
+  .hint-box b { color: var(--text); font-weight: 600; }
 
   .field-grid {
     display: grid;
@@ -122,142 +236,232 @@
     margin-top: 12px;
   }
 
-  .field-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .field-grid.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  @media (max-width: 380px) {
+    .field-grid.three {
+      grid-template-columns: 1fr;
+    }
+  }
 
   label {
-    font-size: 12px;
+    font-size: 11.5px;
+    font-weight: 500;
     color: var(--text-muted);
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+
+  .input-wrap { position: relative; min-width: 0; }
 
   input {
     width: 100%;
+    min-width: 0;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 11px;
     color: var(--text);
-    font-size: 15px;
-    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 14.5px;
+    font-weight: 500;
+    padding: 11px 12px;
     outline: none;
-    transition: border-color 0.15s;
+    letter-spacing: -0.01em;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    -moz-appearance: textfield;
   }
 
-  input:focus { border-color: var(--accent); }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input::placeholder { color: var(--text-muted); font-family: var(--sans); }
+
+  input:hover { border-color: var(--border-strong); }
+
+  input:focus {
+    border-color: var(--accent);
+    background: var(--surface-2);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
 
   .divider {
     height: 1px;
-    background: var(--border);
-    margin: 24px 0;
+    background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    margin: 26px 0;
   }
 
   .result-card {
-    background: var(--surface);
+    position: relative;
+    background: linear-gradient(180deg, var(--surface), var(--bg-elevated));
     border: 1px solid var(--border-strong);
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 18px;
+    padding: 18px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 12px 40px -16px rgba(0, 0, 0, 0.5);
+  }
+
+  .result-card.rr-good {
+    border-color: #245239;
+    box-shadow: 0 12px 40px -16px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--success-glow) inset;
+  }
+
+  .result-card.rr-bad {
+    border-color: #522624;
+    box-shadow: 0 12px 40px -16px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--danger-glow) inset;
   }
 
   .result-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 14px;
+    gap: 16px 14px;
+    margin-bottom: 16px;
   }
 
   .result-item p:first-child {
-    font-size: 12px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--text-muted);
-    margin: 0 0 3px;
+    margin: 0 0 4px;
+    letter-spacing: -0.005em;
   }
 
   .result-item p:last-child {
+    font-family: var(--mono);
     font-size: 21px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     margin: 0;
+    transition: color 0.2s ease;
+    font-variant-numeric: tabular-nums;
   }
+
+  #outRR { color: var(--accent-bright); }
 
   .rr-badge {
     font-size: 13px;
     font-weight: 600;
-    padding: 10px 12px;
-    border-radius: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
     text-align: center;
+    letter-spacing: -0.005em;
+    transition: background 0.2s ease, color 0.2s ease;
   }
 
-  .rr-badge.ok { background: var(--success-dim); color: #7cd39a; }
-  .rr-badge.bad { background: var(--danger-dim); color: #f0a8a5; }
+  .rr-badge.ok {
+    background: linear-gradient(135deg, var(--success-dim), #0d2015);
+    color: #7ee6a4;
+    box-shadow: 0 0 0 1px rgba(62, 207, 126, 0.25) inset;
+  }
+
+  .rr-badge.bad {
+    background: linear-gradient(135deg, var(--danger-dim), #200f0f);
+    color: #ffaba7;
+    box-shadow: 0 0 0 1px rgba(255, 92, 87, 0.25) inset;
+  }
 
   .warn-badge {
     font-size: 12.5px;
     font-weight: 500;
-    padding: 10px 12px;
-    border-radius: 10px;
+    padding: 11px 13px;
+    border-radius: 11px;
     margin-top: 10px;
-    line-height: 1.5;
+    line-height: 1.55;
     display: none;
   }
 
-  .warn-badge.show { display: block; }
-  .warn-badge.amber { background: #3a2d15; color: #e5b866; }
-  .warn-badge.danger { background: var(--danger-dim); color: #f0a8a5; }
+  .warn-badge.show { display: block; animation: slideIn 0.2s ease; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .warn-badge.amber { background: var(--warn-dim); color: #f0c477; box-shadow: 0 0 0 1px rgba(229, 168, 63, 0.2) inset; }
+  .warn-badge.danger { background: var(--danger-dim); color: #ffaba7; box-shadow: 0 0 0 1px rgba(255, 92, 87, 0.2) inset; }
 
   .result-sub {
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--text-muted);
-    margin: 2px 0 0;
-  }
-
-  .result-card {
-    transition: border-color 0.2s;
-  }
-
-  .result-card.rr-good { border-color: #2d5c3f; }
-  .result-card.rr-bad { border-color: #5c2d2b; }
-
-  .result-item p:last-child {
-    transition: color 0.15s;
+    margin: 3px 0 0;
+    font-family: var(--sans);
   }
 
   .copy-btn {
     width: 100%;
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 11px;
-    margin-top: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 13px;
+    margin-top: 14px;
     cursor: pointer;
     text-align: center;
-    transition: border-color 0.15s, color 0.15s;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+
+  .copy-btn::before {
+    content: '⧉';
+    font-size: 13px;
+    opacity: 0.6;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+    background: var(--surface-hover);
   }
 
   .copy-btn:active { transform: scale(0.98); }
-  .copy-btn.copied { border-color: var(--success); color: #7cd39a; }
+
+  .copy-btn.copied {
+    border-color: var(--success);
+    color: #7ee6a4;
+    background: var(--success-dim);
+  }
+
+  .copy-btn.copied::before { content: '✓'; opacity: 1; }
 
   .formula-note {
-    margin-top: 20px;
-    padding: 14px;
-    background: var(--surface-2);
-    border-radius: 10px;
+    margin-top: 22px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
     font-size: 12.5px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--text-secondary);
   }
 
+  .formula-note b { color: var(--text); font-weight: 600; }
+
   .formula-note code {
+    display: inline-block;
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 1px 6px;
-    font-size: 12px;
-    color: var(--text);
-    font-family: "SF Mono", Menlo, monospace;
+    border-radius: 6px;
+    padding: 2px 7px;
+    margin: 2px 0;
+    font-size: 11.5px;
+    color: var(--accent-bright);
+    font-family: var(--mono);
   }
-
-  .formula-note b { color: var(--text); }
 </style>
 </head>
 <body>
@@ -268,7 +472,10 @@
     <p>Торговля — это сохранение денег, а не их зарабатывание</p>
   </div>
 
-  <h1>RR калькулятор</h1>
+  <div class="header-row">
+    <h1>RR калькулятор</h1>
+    <span class="live-dot">live</span>
+  </div>
   <p class="subtitle">Размер позиции и риск/риворд перед входом</p>
 
   <div class="section-label">Единицы ввода сделки</div>
@@ -277,7 +484,7 @@
     <div class="mode-btn" data-unit="mcap">Маркеткап</div>
   </div>
 
-  <div class="section-label" style="margin-top:24px;">Режим расчёта риска</div>
+  <div class="section-label">Режим расчёта риска</div>
   <div class="modes">
     <div class="mode-btn active" data-mode="0">Фикс. $</div>
     <div class="mode-btn" data-mode="1">% от депозита</div>
@@ -285,11 +492,11 @@
   <div class="hint-box" id="hintBox"></div>
 
   <div class="field-grid">
-    <div>
+    <div class="input-wrap">
       <label>Депозит, $</label>
       <input type="number" id="deposit" value="1000" inputmode="decimal">
     </div>
-    <div>
+    <div class="input-wrap">
       <label id="riskLabel">Риск (1R), $</label>
       <input type="number" id="riskInput" value="20" inputmode="decimal">
     </div>
@@ -299,17 +506,24 @@
 
   <div class="section-label">Параметры сделки</div>
   <div class="field-grid three">
-    <div>
+    <div class="input-wrap">
       <label id="entryLabel">Вход, $</label>
       <input type="number" id="entry" value="0.001042" step="0.000001" inputmode="decimal">
     </div>
-    <div>
+    <div class="input-wrap">
       <label id="stopLabel">Стоп, $</label>
       <input type="number" id="stop" value="0.000958" step="0.000001" inputmode="decimal">
     </div>
-    <div>
+    <div class="input-wrap">
       <label id="targetLabel">Цель, $</label>
       <input type="number" id="target" value="0.001459" step="0.000001" inputmode="decimal">
+    </div>
+  </div>
+  <div class="field-grid" style="margin-top: 10px;">
+    <div class="input-wrap">
+      <label>Свой RR (необязательно)</label>
+      <input type="number" id="rrInput" placeholder="напр. 3" step="0.1" inputmode="decimal">
+      <p class="result-sub" style="margin-top:6px;">Впиши RR — цель пересчитается сама. Или впиши цель вручную — RR посчитается от неё.</p>
     </div>
   </div>
   <div class="warn-badge amber" id="stopWarn"></div>
@@ -374,6 +588,7 @@
   const entry = document.getElementById('entry');
   const stop = document.getElementById('stop');
   const target = document.getElementById('target');
+  const rrInput = document.getElementById('rrInput');
   const unitButtons = document.querySelectorAll('.mode-btn[data-unit]');
   const entryLabel = document.getElementById('entryLabel');
   const stopLabel = document.getElementById('stopLabel');
@@ -425,6 +640,19 @@
     calc();
   }
 
+  let rrInputActive = false;
+
+  function applyRR() {
+    const e = parseFloat(entry.value) || 0;
+    const s = parseFloat(stop.value) || 0;
+    const desiredRR = parseFloat(rrInput.value);
+    if (!e || !s || s >= e || !desiredRR || desiredRR <= 0) return;
+    const stopPct = Math.abs((e - s) / e);
+    const newTarget = e + e * stopPct * desiredRR;
+    target.value = target.step && target.step.includes('.') ? newTarget.toFixed(6) : Math.round(newTarget);
+    calc();
+  }
+
   function calc() {
     const dep = parseFloat(deposit.value) || 0;
     const e = parseFloat(entry.value) || 0;
@@ -460,6 +688,10 @@
     document.getElementById('outStopPct').textContent = stopPct.toFixed(1) + '%';
     document.getElementById('outPosition').textContent = '$' + position.toFixed(2);
     document.getElementById('outRR').textContent = stopPct > 0 ? '1:' + rr.toFixed(2) : '—';
+
+    if (!rrInputActive && stopPct > 0) {
+      rrInput.value = rr.toFixed(2);
+    }
     document.getElementById('outTokens').textContent = tokens > 0 ? Math.round(tokens).toLocaleString('ru-RU') : '—';
     document.getElementById('outPositionPct').textContent = dep > 0 ? posPctOfDep.toFixed(0) + '% от депозита' : '';
 
@@ -528,7 +760,14 @@ RR: 1:${c.rr.toFixed(2)}`;
     setMode(m);
     try { localStorage.setItem('rr_calc_mode', m); } catch (e) {}
   }));
-  [deposit, riskInput, entry, stop, target].forEach(el => el.addEventListener('input', calc));
+  [deposit, riskInput, entry, stop, target].forEach(el => el.addEventListener('input', () => {
+    rrInputActive = false;
+    calc();
+  }));
+
+  rrInput.addEventListener('focus', () => { rrInputActive = true; });
+  rrInput.addEventListener('input', applyRR);
+  rrInput.addEventListener('blur', () => { rrInputActive = false; });
 
   let savedMode = 0;
   try {
